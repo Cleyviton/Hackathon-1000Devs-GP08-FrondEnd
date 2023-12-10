@@ -1,14 +1,13 @@
 "use client";
-import Image from "next/image";
 import { useEffect, useState } from "react";
-
+import Link from "next/link";
 export default function Home() {
   const [pacientes, setpacientes] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:4000/pacientes"); // Substitua pela URL da sua API
+        const response = await fetch("http://localhost:4000/pacientes/"); // Substitua pela URL da sua API
         const data = await response.json();
         setpacientes(data);
       } catch (error) {
@@ -28,7 +27,14 @@ export default function Home() {
           <h1>Pacientes</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {pacientes.map((paciente: any) => (
-              <div
+              <Link
+                href={{
+                  pathname: `/vacinas/aplicada`,
+                  query: {
+                    pacienteId: paciente.id_paciente,
+                    nome: paciente.nome,
+                  },
+                }}
                 key={paciente.id_paciente}
                 className="bg-white p-4 shadow-md rounded-md"
               >
@@ -39,7 +45,7 @@ export default function Home() {
                   Data de Nascimento:{" "}
                   {new Date(paciente.data_nascimento).toLocaleDateString()}
                 </p>
-              </div>
+              </Link>
             ))}
           </div>
         </>
