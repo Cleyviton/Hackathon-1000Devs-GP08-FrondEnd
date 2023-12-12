@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 export default function App() {
     const [vacinas, setvacinas] = useState([]);
     const [idadeFiltro, setIdadeFiltro] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const filtrarPorIdade = async () => {
         try {
@@ -21,14 +22,17 @@ export default function App() {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true);
                 const response = await fetch(
                     "http://localhost:4000/consulta/vacina"
                 ); // Substitua pela URL da sua API
                 const data = await response.json();
-                console.log(data);
+
                 setvacinas(data);
             } catch (error) {
                 console.error("Erro ao buscar dados:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -55,7 +59,7 @@ export default function App() {
                     Filtrar
                 </button>
             </div>
-            {vacinas.length === 0 ? (
+            {loading ? (
                 <div className="flex justify-center items-center h-screen text-4xl">
                     carregando...
                 </div>
@@ -63,7 +67,7 @@ export default function App() {
                 <>
                     <h1 className="p-4">vacinas</h1>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-                        {vacinas.map((vacina: any) => (
+                        {vacinas?.map((vacina: any) => (
                             <div
                                 key={vacina.vacina}
                                 className="bg-white p-4 shadow-md rounded-md"
